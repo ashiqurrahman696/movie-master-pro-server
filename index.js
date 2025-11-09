@@ -65,7 +65,18 @@ async function run(){
             const newMovie = req.body;
             const result = await moviesCollection.insertOne(newMovie);
             res.send(result);
-        })
+        });
+
+        app.patch("/movies/:id", async(req, res) => {
+            const { id } = req.params;
+            const updatedMovie = req.body;
+            const query = { _id: new ObjectId(id) };
+            const update = {
+                $set: updatedMovie,
+            }
+            const result = await moviesCollection.updateOne(query, update);
+            res.send(result);
+        });
 
         await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
