@@ -47,6 +47,13 @@ async function run(){
             }
         });
 
+        // Movies api
+        app.get("/movies", async(req, res) => {
+            const cursor = moviesCollection.find();
+            const result = await cursor.toArray();
+            res.send(result);
+        });
+
         app.post("/movies", async(req, res) => {
             const newMovie = req.body;
             const result = await moviesCollection.insertOne(newMovie);
