@@ -54,6 +54,13 @@ async function run(){
             res.send(result);
         });
 
+        app.get("/movies/:id", async(req, res) => {
+            const {id} = req.params;
+            const query = {_id: new ObjectId(id)};
+            const result = await moviesCollection.findOne(query);
+            res.send(result);
+        });
+
         app.post("/movies", async(req, res) => {
             const newMovie = req.body;
             const result = await moviesCollection.insertOne(newMovie);
