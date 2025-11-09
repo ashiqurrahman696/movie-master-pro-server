@@ -61,6 +61,15 @@ async function run(){
             res.send(result);
         });
 
+        app.get("/my-collection", async(req, res) => {
+            const {email} = req.query;
+            const query = {};
+            if (email) query.addedBy = email;
+            const cursor = moviesCollection.find(query);
+            const result = await cursor.toArray();
+            res.send(result);
+        });
+
         app.post("/movies", async(req, res) => {
             const newMovie = req.body;
             const result = await moviesCollection.insertOne(newMovie);
