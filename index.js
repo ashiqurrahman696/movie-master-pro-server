@@ -31,6 +31,12 @@ async function run(){
         const usersCollection = db.collection("users");
 
         // User apis
+        app.get("/users", async(req, res) => {
+            const cursor = usersCollection.find();
+            const result = await cursor.toArray();
+            res.send(result);
+        });
+
         app.post("/users", async (req, res) => {
             const newUser = req.body;
             const email = req.body.email;
@@ -50,6 +56,12 @@ async function run(){
         // Movies api
         app.get("/movies", async(req, res) => {
             const cursor = moviesCollection.find();
+            const result = await cursor.toArray();
+            res.send(result);
+        });
+
+        app.get("/top-movies", async(req, res) => {
+            const cursor = moviesCollection.find().sort({rating: -1}).limit(5);
             const result = await cursor.toArray();
             res.send(result);
         });
