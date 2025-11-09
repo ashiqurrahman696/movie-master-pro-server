@@ -66,6 +66,12 @@ async function run(){
             res.send(result);
         });
 
+        app.get("/recent-movies", async(req, res) => {
+            const cursor = moviesCollection.find().sort({createdAt: -1}).limit(6);
+            const result = await cursor.toArray();
+            res.send(result);
+        });
+
         app.get("/movies/:id", async(req, res) => {
             const {id} = req.params;
             const query = {_id: new ObjectId(id)};
