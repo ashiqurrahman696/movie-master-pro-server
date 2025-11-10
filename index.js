@@ -79,7 +79,29 @@ async function run(){
             res.send(result);
         });
 
-        
+        app.get("/rating-greater", async(req, res) => {
+            const {rating} = req.query;
+            const query = {
+                rating: {
+                    $gte: Number(rating)
+                }
+            }
+            const cursor = moviesCollection.find(query);
+            const result = await cursor.toArray();
+            res.send(result);
+        });
+
+        app.get("/rating-less", async(req, res) => {
+            const {rating} = req.query;
+            const query = {
+                rating: {
+                    $lte: Number(rating)
+                }
+            }
+            const cursor = moviesCollection.find(query);
+            const result = await cursor.toArray();
+            res.send(result);
+        });
 
         app.get("/my-collection", async(req, res) => {
             const {email} = req.query;
