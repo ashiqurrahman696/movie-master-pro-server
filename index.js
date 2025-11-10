@@ -26,6 +26,32 @@ const client = new MongoClient(uri, {
     }
 });
 
+const verifyFirebaseToken = async (req, res, next) => {
+    const authorization = req.headers.authorization;
+    if (!authorization) {
+        return res.status(401).send({
+            message: "Unauthorized access"
+        });
+    }
+    const token = authorization.split(" ")[1];
+    if (!token) {
+        return res.status(401).send({
+            message: "Unauthorized access"
+        });
+    }
+    try {
+        const decoded = await admin.auth().verifyIdToken(token);
+        req.token_email = decoded.email;
+        next();
+    }
+    catch {
+        console.log("Invalid token");
+        return res.status(401).send({
+            message: "Unauthorized access"
+        });
+    }
+}
+
 app.get("/", (req, res) => {
     res.send("MovieMaster Pro server is running");
 });
@@ -123,7 +149,7 @@ async function run(){
             res.send(result);
         });
 
-        app.get("/my-collection", async(req, res) => {
+        app.get("/my-collection", verifyFirebaseToken, async(req, res) => {
             const {email} = req.query;
             const query = {};
             if (email) query.addedBy = email;
@@ -132,13 +158,13 @@ async function run(){
             res.send(result);
         });
 
-        app.post("/movies", async(req, res) => {
+        app.post("/movies", verifyFirebaseToken, async(req, res) => {
             const newMovie = req.body;
             const result = await moviesCollection.insertOne(newMovie);
             res.send(result);
         });
 
-        app.patch("/movies/:id", async(req, res) => {
+        app.patch("/movies/:id", verifyFirebaseToken, async(req, res) => {
             const { id } = req.params;
             const updatedMovie = req.body;
             const query = { _id: new ObjectId(id) };
@@ -149,7 +175,7 @@ async function run(){
             res.send(result);
         });
 
-        app.delete("/movies/:id", async (req, res) => {
+        app.delete("/movies/:id", verifyFirebaseToken, async (req, res) => {
             const { id } = req.params;
             const query = { _id: new ObjectId(id) };
             const result = await moviesCollection.deleteOne(query);
