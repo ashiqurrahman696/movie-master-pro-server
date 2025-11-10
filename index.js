@@ -9,7 +9,8 @@ const port = 3000;
 app.use(cors());
 app.use(express.json());
 
-const serviceAccount = require("./movie-master-pro-firebase-adminsdk.json");
+const decoded = Buffer.from(process.env.FIREBASE_SERVICE_KEY, "base64").toString("utf8");
+const serviceAccount = JSON.parse(decoded);
 
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount)
@@ -191,6 +192,11 @@ async function run(){
 }
 run().catch(console.dir);
 
-app.listen(port, () => {
-    console.log(`MovieMaster Pro server is running on port ${port}`)
-});
+client.connect()
+    .then(() => {
+        app.listen(port, () => {
+            console.log(`MovieMaster Peo server is running on port ${port}`)
+        })
+
+    })
+    .catch(console.dir)
