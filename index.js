@@ -1,12 +1,19 @@
 require("dotenv").config();
 const express = require('express');
 const cors = require('cors');
+const admin = require("firebase-admin");
 const app = express();
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const port = 3000;
 
 app.use(cors());
 app.use(express.json());
+
+const serviceAccount = require("./movie-master-pro-firebase-adminsdk.json");
+
+admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount)
+});
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.fm0wyio.mongodb.net/?appName=Cluster0`;
 
