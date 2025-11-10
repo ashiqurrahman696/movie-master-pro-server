@@ -103,6 +103,19 @@ async function run(){
             res.send(result);
         });
 
+        app.get("/movie-by-genre", async(req, res) => {
+            const genres = req.query.genres ? JSON.parse(req.query.genres) : [];
+            const filter = {};
+            if(genres.length > 0){
+                filter.genre =  {
+                    $in: genres
+                }
+            }
+            const cursor = moviesCollection.find(filter);
+            const result = await cursor.toArray();
+            res.send(result);
+        });
+
         app.get("/my-collection", async(req, res) => {
             const {email} = req.query;
             const query = {};
