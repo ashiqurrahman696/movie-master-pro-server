@@ -89,7 +89,12 @@ async function run(){
 
         // Movies api
         app.get("/movies", async(req, res) => {
-            const cursor = moviesCollection.find();
+            const {searchText} = req.query;
+            const query = {};
+            if(searchText){
+                query.title = {$regex: searchText, $options: "i"};
+            }
+            const cursor = moviesCollection.find(query);
             const result = await cursor.toArray();
             res.send(result);
         });
