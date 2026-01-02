@@ -87,6 +87,12 @@ async function run(){
             }
         });
 
+        app.get('/user', verifyFirebaseToken, async (req, res) => {
+            const {email} = req.query;
+            const result = await usersCollection.findOne({ email });
+            res.send({ role: result?.role });
+        });
+
         // Movies api
         app.get("/movies", async(req, res) => {
             const {searchText} = req.query;
